@@ -4,7 +4,7 @@ import Login from '@/views/Login.vue';
 import editor from "@/views/editor";
 import register from "@/views/register";
 import forgetpass from "@/views/forgetpass"
-import { from } from 'core-js/fn/array';
+// import { from } from 'core-js/fn/array';
 import graph from "@/views/graph";
 
 Vue.use(VueRouter)

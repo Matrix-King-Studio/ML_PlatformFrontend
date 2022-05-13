@@ -1,4 +1,4 @@
-<template>
+y<template>
   <div id="app">
     <router-link to="/"></router-link>
     <router-link to="/login"></router-link>
