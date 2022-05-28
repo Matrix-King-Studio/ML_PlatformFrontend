@@ -1,23 +1,51 @@
 import G6 from "@antv/g6"
 
-let startPoint = null
-let startPointId = null
-let startItem = null
-let endPoint = {}
-let activeItem = null
-let curInPoint = null
+let startItem = null;
+let startPoint = null;
+let startPointId = null;
+let endPoint = {};
+let activeItem = null;
+let curInPoint = null;
+
+// 边起始点和终止点对应的参数ID
+let startPointParameterId = null;
+let endPointParameterId = null;
 
 const addEdge = {
     init() {
         G6.registerBehavior("add-edge", {
-            hasTran: false,
             getEvents() {
                 return {
                     mousemove: "onMousemove",
                     mouseup: "onMouseup",
-                    mousedown: "onMouseDown",
-                    "node:mouseover": "onMouseover",
-                    "node:mouseleave": "onMouseleave"
+                }
+            },
+            onMousemove(event) {
+                const item = event.item;
+                if (!startPoint && event.target.attrs.isOutPoint) {
+                    let startX = parseInt(event.target.attrs.x);
+                    let startY = parseInt(event.target.attrs.y);
+                    startPoint = { x: startX, y: startY };
+                    startPointId = event.target.attrs.id ? event.target.attrs.id : event.target.attrs.parent;
+                    startItem = item;
+                    // 设置起点关联参数ID
+                    startPointParameterId = event.target.attrs.parameter_id;
+
+                    this.edge = this.graph.add("edge", {
+                        source: { x: event.x, y: event.y },
+                        target: item,
+                        start: startPoint,
+                        end: startPoint,
+                        type: "link-edge"
+                    })
+                } else {
+                    const point = { x: event.x, y: event.y }
+                    if (this.edge) {
+                        // 增加边的过程中，移动时边跟着移动
+                        this.graph.updateItem(this.edge, {
+                            target: point
+                        })
+                    }
                 }
             },
             onMouseup(event) {
@@ -44,30 +72,35 @@ const addEdge = {
                     if (curInPoint) {
                         // 判断该入点是否已经被连接
                         let checkLinkedEdges = this.graph.findAll("edge", edge => {
-                            return edge.getModel().endPointId === curInPoint.attrs.id
+                            return edge.getModel().endPointId === curInPoint.attrs.id;
                         })
                         // 判断该入edge.getModel点是否是该node的入点
-                        let isInPointInStartNode = curInPoint.cfg.parent.get("item") === startItem
+                        let isInPointInStartNode = curInPoint.cfg.parent.get("item") === startItem;
 
                         if (!checkLinkedEdges.length && activeItem && !isInPointInStartNode) {
-                            const endX = parseInt(curInPoint.attrs.x)
-                            const endY = parseInt(curInPoint.attrs.y)
-                            endPoint = { x: endX, y: endY }
+                            // 获取当前连接点坐标
+                            let endX = parseInt(curInPoint.attrs.x);
+                            let endY = parseInt(curInPoint.attrs.y);
+                            endPoint = { x: endX, y: endY };
+                            // 设置终点关联参数ID
+                            endPointParameterId = curInPoint.attrs.parameter_id;
+
                             if (this.edge) {
                                 this.graph.removeItem(this.edge)
                                 let data = {
-                                    id: `edge${Date.parse(new Date())}`,
+                                    id: `edge_${Date.parse(new Date())}`,
                                     source: startItem,
                                     target: item,
                                     start: startPoint,
                                     end: endPoint,
                                     startPointId: startPointId,
                                     endPointId: curInPoint.attrs.id,
+                                    startPointParameterId: startPointParameterId,
+                                    endPointParameterId: endPointParameterId,
                                     shape: "customEdge",
                                     type: "edge"
                                 }
                                 this.graph.add("edge", data)
-                                console.log(this.graph.save());
                             }
                         } else if (this.edge) {
                             this.graph.removeItem(this.edge)
@@ -88,59 +121,6 @@ const addEdge = {
                 curInPoint = null
                 this.graph.setMode("default")
             },
-            onMousemove(event) {
-                const item = event.item
-                if (!startPoint && event.target.attrs.isOutPoint) {
-                    const startX = parseInt(event.target.attrs.x)
-                    const startY = parseInt(event.target.attrs.y)
-                    startPoint = { x: startX, y: startY }
-                    startPointId = event.target.attrs.parent ? event.target.attrs.parent : event.target.attrs.id
-                    startItem = item
-
-                    this.edge = this.graph.add("edge", {
-                        source: { x: event.x, y: event.y },
-                        target: item,
-                        start: startPoint,
-                        end: startPoint,
-                        type: "link-edge"
-                    })
-                } else {
-                    const point = { x: event.x, y: event.y }
-                    if (this.edge) {
-                        // 增加边的过程中，移动时边跟着移动
-                        this.graph.updateItem(this.edge, {
-                            //  start: startPoint,
-                            target: point
-                        })
-                    }
-                }
-            },
-            onMouseover(event) {
-                const item = event.item
-                if (item && item.getType() === "node") {
-                    if (event.target.attrs.isInPointOut && !this.hasTran) {
-                        event.target.transform([
-                            ["t", 0, 3],
-                            ["s", 1.2, 1.2],
-                        ])
-                        this.hasTran = true
-                    }
-                    this.graph.paint()
-                }
-            },
-            onMouseleave() {
-                this.graph.find("node", node => {
-                    const group = node.get("group")
-                    const children = group.cfg.children
-                    children.map(child => {
-                        if (child.attrs.isInPointOut) {
-                            child.resetMatrix()
-                        }
-                    })
-                })
-                this.hasTran = false
-                this.graph.paint()
-            }
         });
     }
 }

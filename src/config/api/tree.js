@@ -3,7 +3,7 @@ import service from "@/request";
 export default {
     getTreeData() {
         return service({
-            url: "/tree",
+            url: "/api/v1/tree",
             method: "get",
         })
     }

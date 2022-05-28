@@ -1,10 +1,17 @@
-    import service from "@/request";
+import service from "@/request";
 
 export default {
-    login(id) {
+    login(data) {
         return service({
-            url: `/admin/login/`,
-            method: "post",
+            url: '/rest-auth/login/',
+            method: "POST",
+            data,
+        })
+    },
+    register() {
+        return service({
+            url: '/rest-auth/registration/',
+            method: "post"
         })
     }
 }

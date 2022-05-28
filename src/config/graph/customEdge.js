@@ -50,7 +50,6 @@ const customEdge = {
 
                     if (!cfg.source.x) {
                         sourceNode = cfg.source.getModel()
-                        // console.log(sourceNode)
                         start = { x: sourceNode.x + cfg.start.x, y: sourceNode.y + cfg.start.y }
                     } else {
                         start = cfg.source

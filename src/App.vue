@@ -1,4 +1,4 @@
-y<template>
+<template>
   <div id="app">
     <router-link to="/"></router-link>
     <router-link to="/login"></router-link>
@@ -7,13 +7,10 @@ y<template>
 </template>
 
 <script>
-
-
 export default {
-  name: 'App',
-  components: {
-  }
-}
+  name: "App",
+  components: {},
+};
 </script>
 
 <style>

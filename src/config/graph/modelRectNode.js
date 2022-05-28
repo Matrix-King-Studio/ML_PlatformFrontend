@@ -14,14 +14,14 @@ const modelRectNode = {
                 const height = cfg.size[1]
 
                 // 此处必须有偏移 不然drag-node错位
-                const offsetX = -width / 2
-                const offsetY = -height / 2
-                const label = cfg.label
-                const id = `node${Date.parse(new Date())}`
+                const offsetX = -width / 2;
+                const offsetY = -height / 2;
+                const label = cfg.label;
+                const id = cfg.id;
 
                 const shape = group.addShape("rect", {
                     attrs: {
-                        id: id,
+                        id: `${id}_rect`,
                         x: offsetX,
                         y: offsetY,
                         width: width,
@@ -44,7 +44,7 @@ const modelRectNode = {
                 })
                 group.addShape('text', {
                     attrs: {
-                        id: `label${Date.parse(new Date())}`,
+                        id: `${id}_label`,
                         x: offsetX + width / 2,
                         y: offsetY + height / 2,
                         textAlign: 'center',
@@ -64,7 +64,7 @@ const modelRectNode = {
                         let x = width * ((i + 1) / (inputsLength + 1)), y = 0
                         group.addShape('circle', {
                             attrs: {
-                                id: `circle-${point.name}-InPointOut-${Date.parse(new Date())}`,
+                                id: `${id}_InPointOut_${point.name}`,
                                 parent: id,
                                 x: x + offsetX,
                                 y: y + offsetY,
@@ -87,10 +87,11 @@ const modelRectNode = {
                                 opacity: 0,
                             }
                         })
-                        group.addShape('circle', {
+                        group.addShape("circle", {
                             attrs: {
-                                id: `circle-${point.name}-InPoint-${Date.parse(new Date())}`,
+                                id: `${id}_InPoint_${point.name}`,
                                 parent: id,
+                                parameter_id: point.id,
                                 x: x + offsetX,
                                 y: y + offsetY,
                                 r: 6,
@@ -100,7 +101,7 @@ const modelRectNode = {
                                 opacity: 0
                             }
                         })
-                        point.id = id
+                        point.parameter_id = point.id;
                     }
                 }
 
@@ -112,7 +113,7 @@ const modelRectNode = {
                         let x = width * ((i + 1) / (outputsLength + 1)), y = height
                         group.addShape('circle', {
                             attrs: {
-                                id: `circle-${point.name}-OutPointOut-${Date.parse(new Date())}`,
+                                id: `${id}_OutPointOut_${point.name}`,
                                 parent: id,
                                 x: x + offsetX,
                                 y: y + offsetY,
@@ -137,8 +138,9 @@ const modelRectNode = {
                         })
                         group.addShape('circle', {
                             attrs: {
-                                id: `circle-${point.name}-OutPoint-${Date.parse(new Date())}`,
+                                id: `${id}_OutPoint_${point.name}`,
                                 parent: id,
+                                parameter_id: point.id,
                                 x: x + offsetX,
                                 y: y + offsetY,
                                 r: 6,
@@ -148,7 +150,7 @@ const modelRectNode = {
                                 opacity: 0
                             }
                         })
-                        point.id = id
+                        point.parameter_id = point.id;
                     }
                 }
                 return shape

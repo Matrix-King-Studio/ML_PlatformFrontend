@@ -1,12 +1,15 @@
 import axios from "axios"
 
+console.log(document.cookie);
 const service = axios.create({
-    // baseURL: "http://39.96.87.195:8000/api/v1/",
-    baseURL: "http://127.0.0.1:8000/api/v1/",
+    baseURL: "http://localhost:8000",
+    // baseURL: "http://121.37.67.75:8085",
     withCredentials: true,
     headers: {
         "Access-Control-Allow-Origin": '*',
+        "X-CSRFToken": document.cookie.split('=')[1]
     }
+
 })
 
 export default service

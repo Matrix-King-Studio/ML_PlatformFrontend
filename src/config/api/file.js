@@ -3,7 +3,7 @@ import service from "@/request";
 export default {
     getDataSet(id) {
         return service({
-            url: `/project/${id}/dataSet/`,
+            url: `/api/v1/project/${id}/dataSet/`,
             method: "get",
         })
     },
@@ -15,7 +15,7 @@ export default {
     },
     readFile(fileId) {
         return service({
-            url: `/file/${fileId}/readFile`,
+            url: `/api/v1/file/${fileId}/readFile`,
             method: "get",
         })
     }

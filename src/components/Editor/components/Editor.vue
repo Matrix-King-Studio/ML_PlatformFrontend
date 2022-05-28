@@ -140,7 +140,6 @@ export default {
         this.$refs.menu.getContextMenu(event.x + 200, event.y + 64 + 38)
       })
     },
-
     closeDrawer() {
       this.parameterVisible = false
     },

@@ -18,7 +18,6 @@ const mutations = {
 }
 
 const actions = {
-    // eslint-disable-next-line no-unused-vars
     GetGraph({ commit }, id) {
         return new Promise((resolve, reject) => {
             project.getProjectGraph(id).then(res => {
@@ -29,14 +28,12 @@ const actions = {
         })
     },
 
-    // eslint-disable-next-line no-unused-vars
-    SaveGraph({ commit }, data) {
+    SaveGraph({ commit }) {
         return new Promise(((resolve, reject) => {
-            let graphData = store.state.graph.graph.save()
-            graphData["project"] = 1
+            let graphData = store.state.graph.graph.save();
+            graphData["project"] = 1;
             console.log(graphData);
             graph.saveGraph(store.state.graph.graphId, graphData).then(res => {
-                console.log(res);
                 resolve(res.data)
             }).catch(err => {
                 reject(err.response.data)
