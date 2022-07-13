@@ -1,8 +1,5 @@
 # AIOps一站式人工智能平台 Vue前端
 
-node 版本：v16.13.1
-npm 版本：8.1.2
-
 ## Project setup
 ```
 npm install
