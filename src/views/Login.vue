@@ -66,6 +66,7 @@ export default {
         callback();
       }
     };
+
     return {
       // 登录表单的数据绑定对象
       loginForm: {
@@ -97,6 +98,7 @@ export default {
         status: [{ validator: checkStatus, trigger: "change" }],
       },
       status: false,
+
     };
   },
   components: {

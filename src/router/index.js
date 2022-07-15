@@ -7,6 +7,7 @@ import forgetpass from "@/views/forgetpass"
 // import { from } from 'core-js/fn/array';
 import graph from "@/views/graph";
 import deploy from "../views/deploy";
+import wxLogin from "../views/wxLogin";
 
 Vue.use(VueRouter)
 
@@ -18,7 +19,7 @@ const routes = [{
     {
         path: '/login',
         name: 'Login',
-        component: Login
+        component: wxLogin
     },
     {
         path: '/register',

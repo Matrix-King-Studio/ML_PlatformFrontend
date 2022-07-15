@@ -5,41 +5,43 @@
     </el-header>
     <el-container>
       <el-aside width="208px">
-        <el-menu
-            mode="vertical"
-            :default-active="activeServerIndex"
-            @select="handleSelectServer">
-          <el-menu-item
-              v-for="server in serverList"
-              :key="server.id"
-              :index="server.id.toString()">
-            {{ server.name }}
-          </el-menu-item>
-        </el-menu>
-        <el-divider></el-divider>
-        <el-button type="primary" @click="addServerDialogFormVisible = true">
-          添加服务器
-        </el-button>
-        <el-dialog title="服务器信息" :visible.sync="addServerDialogFormVisible">
-          <el-form :model="serverForm">
-            <el-form-item label="服务器名" :label-width="formLabelWidth">
-              <el-input v-model="serverForm.name" autocomplete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="主机地址" :label-width="formLabelWidth">
-              <el-input v-model="serverForm.host" autocomplete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="SSH用户名" :label-width="formLabelWidth">
-              <el-input v-model="serverForm.username" autocomplete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="SSH密码" :label-width="formLabelWidth">
-              <el-input v-model="serverForm.password" autocomplete="off"></el-input>
-            </el-form-item>
-          </el-form>
-          <div slot="footer" class="dialog-footer">
-            <el-button @click="addServerDialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="addServerDialogFormVisible = false">确 定</el-button>
-          </div>
-        </el-dialog>
+        <div style="padding-left: 10px">
+          <el-menu
+              mode="vertical"
+              :default-active="activeServerIndex"
+              @select="handleSelectServer">
+            <el-menu-item
+                v-for="server in serverList"
+                :key="server.id"
+                :index="server.id.toString()">
+              {{ server.name }}
+            </el-menu-item>
+          </el-menu>
+          <el-divider></el-divider>
+          <el-button type="primary" @click="addServerDialogFormVisible = true">
+            添加服务器
+          </el-button>
+          <el-dialog title="服务器信息" :visible.sync="addServerDialogFormVisible">
+            <el-form :model="serverForm">
+              <el-form-item label="服务器名" :label-width="formLabelWidth">
+                <el-input v-model="serverForm.name" autocomplete="off"></el-input>
+              </el-form-item>
+              <el-form-item label="主机地址" :label-width="formLabelWidth">
+                <el-input v-model="serverForm.host" autocomplete="off"></el-input>
+              </el-form-item>
+              <el-form-item label="SSH用户名" :label-width="formLabelWidth">
+                <el-input v-model="serverForm.username" autocomplete="off"></el-input>
+              </el-form-item>
+              <el-form-item label="SSH密码" :label-width="formLabelWidth">
+                <el-input v-model="serverForm.password" autocomplete="off"></el-input>
+              </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="addServerDialogFormVisible = false">取 消</el-button>
+              <el-button type="primary" @click="addServerDialogFormVisible = false">确 定</el-button>
+            </div>
+          </el-dialog>
+        </div>
       </el-aside>
       <el-main>
         <el-button type="primary" @click="addModelDialogFormVisible = true">
@@ -89,7 +91,7 @@
             <el-button type="primary" @click="addModel">确 定</el-button>
           </div>
         </el-dialog>
-        <el-dialog :title="`${this.editModelForm.modelName}模型信息`" :visible.sync="editModelDialogFormVisible">
+        <el-dialog :title="`${editModelForm.modelName}模型信息`" :visible.sync="editModelDialogFormVisible">
           <el-form :model="editModelForm">
             <el-form-item label="版本号" :label-width="formLabelWidth">
               {{ editModelForm.modelVersion }}
@@ -121,7 +123,7 @@
           </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button @click="editModelDialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="confirmEditModel">确 定</el-button>
+            <el-button type="primary" @click="confirmEditModel(editModelForm.modelName)">确 定</el-button>
           </div>
         </el-dialog>
         <el-table
@@ -148,30 +150,63 @@
                   size="mini"
                   type="primary"
                   v-if="scope.row['modelName']"
-                  @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                  @click="handleEdit(scope.$index, scope.row)">编辑
+              </el-button>
               <el-button
                   size="mini"
                   type="info"
                   v-if="scope.row['modelName']"
-                  @click="handleDebug(scope.$index, scope.row)">调试</el-button>
+                  @click="handleDebug(scope.$index, scope.row)">调试
+              </el-button>
               <el-button
                   size="mini"
                   type="danger"
                   v-if="scope.row['modelName']"
-                  @click="handleOffline(scope.$index, scope.row)">下线</el-button>
+                  @click="handleOffline(scope.$index, scope.row)">下线
+              </el-button>
               <el-button
                   size="mini"
                   type="success"
                   v-if="!scope.row['modelName']"
-                  @click="handleOnline(scope.$index, scope.row)">上线</el-button>
+                  @click="handleOnline(scope.$index, scope.row)">上线
+              </el-button>
               <el-button
                   size="mini"
                   type="danger"
                   v-if="!scope.row['modelName']"
-                  @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                  @click="handleDelete(scope.$index, scope.row)">删除
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
+        <el-drawer
+            :title="`${editModelForm.modelName} 模型调试`"
+            :visible.sync="debugDrawerVisible"
+            size="50%">
+          <div>
+            <el-tabs type="card">
+              <el-tab-pane label="接口测试">接口测试</el-tab-pane>
+              <el-tab-pane label="延迟测试">
+                <div style="padding-left: 30px">
+                  <el-form ref="form" :model="debugDelayTestForm" label-width="80px">
+                    <el-form-item label="测试次数">
+                      <el-input-number v-model="debugDelayTestForm.frequency" :min="10" :max="100"></el-input-number>
+                    </el-form-item>
+                    <el-form-item label="测试输入">
+                      <el-checkbox-group v-model="debugDelayTestForm.input">
+                        <el-checkbox v-for="option of delayTestInputOptions"
+                                     :label="option" name="input"></el-checkbox>
+                      </el-checkbox-group>
+                    </el-form-item>
+                    <el-form-item>
+                      <el-button type="primary" @click="submitDelayTestForm">立即创建</el-button>
+                    </el-form-item>
+                  </el-form>
+                </div>
+              </el-tab-pane>
+            </el-tabs>
+          </div>
+        </el-drawer>
       </el-main>
     </el-container>
   </el-container>
@@ -225,6 +260,15 @@ export default {
       modelTableData: [],
       searchModel: '',
       // 模型管理相关 end
+      // 模型调试相关 start
+      debugDrawerVisible: false,
+      delayTestInputOptions: ["保险都是骗人的", "我之前做了心脏支架，能买你们保险吗", "保险等待期什么意思", "我现在不需要保险",
+        "保险合同有纸质版的吗？"],
+      debugDelayTestForm: {
+        frequency: 10,
+        input: [],
+      }
+      // 模型调试相关 end
     }
   },
   created() {
@@ -261,8 +305,10 @@ export default {
     getTorchServeModelList() {
       // Server索引转换为整数类型
       let serverIdx = parseInt(this.activeServerIndex);
-      let url = this.getTorchServeModelManagementUrl(serverIdx);
-      axios.get(url).then(res => {
+      let serverHost = this.serverList[serverIdx - 1]["host"];
+      let data = {"host": serverHost};
+      server.getTorchServeModelList(data).then(res => {
+        console.log(res);
         if (res.data["models"]) {
           this.modelTableData = res.data["models"];
         } else {
@@ -309,14 +355,22 @@ export default {
       })
     },
     handleDebug(index, row) {
-      console.log(index, row);
-    },
-    handleOffline(index, row) {
-      console.log(index, row);
+      this.debugDrawerVisible = true;
       let serverIdx = parseInt(this.activeServerIndex);
       let url = this.getTorchServeModelManagementUrl(serverIdx);
-      axios.delete(url + "/" + row["modelName"]).then(_ => {
-        this.getTorchServeModelList();
+      axios.get(url + "/" + row.modelName).then(res => {
+        this.editModelForm = res.data[0];
+      }).catch(err => {
+        console.log(err);
+      })
+    },
+    handleOffline(index, row) {
+      let serverIdx = parseInt(this.activeServerIndex);
+      let serverHost = this.serverList[serverIdx - 1]["host"];
+      let data = {"host": serverHost, "modelName": row.modelName};
+      server.offlineTorchServeModel(data).then(res => {
+        console.log(res);
+        this.getAllModelList();
       }).catch(err => {
         console.log(err);
       })
@@ -340,9 +394,16 @@ export default {
       this.registerModel(url);
     },
     handleDelete(index, row) {
-      console.log(index, row);
       let serverIdx = parseInt(this.activeServerIndex);
       // 发送 ssh 信息，请求服务器删除模型
+      let data = this.serverList[serverIdx - 1];
+      data["modelName"] = row.modelUrl;
+      server.deleteServerModel(data).then(res => {
+        console.log(res);
+        this.getAllModelList();
+      }).catch(err => {
+        console.log(err);
+      })
     },
     addModel() {
       // 拼接模型注册地址
@@ -358,25 +419,37 @@ export default {
       let url = `${baseUrl}?${queryStr}`;
       this.registerModel(url);
     },
-    confirmEditModel() {
+    confirmEditModel(modelName) {
       // 拼接模型注册地址
       let serverIdx = parseInt(this.activeServerIndex);
-      let baseUrl = this.getTorchServeModelManagementUrl(serverIdx);
-      baseUrl += "/" + this.editModelForm["modelName"]
-      let updateData = {
-        minWorkers: this.editModelForm["minWorkers"],
-        maxWorkers: this.editModelForm["maxWorkers"],
-        synchronous: this.editModelForm["synchronous"],
+      let serverHost = this.serverList[serverIdx - 1]["host"];
+      console.log(this.editModelForm);
+      let data = {
+        "host": serverHost,
+        "modelName": modelName,
+        "minWorkers": this.editModelForm["minWorkers"],
+        "maxWorkers": this.editModelForm["maxWorkers"],
+        "synchronous": this.editModelForm["synchronous"],
       };
-      let queryList = [];
-      for (let [key, value] of Object.entries(updateData)) {
-        if (value) {
-          queryList.push(`${key}=${value}`);
-        }
-      }
-      let queryStr = queryList.join("&");
-      let url = `${baseUrl}?${queryStr}`;
-      this.updateModel(url);
+      server.updateTorchServeModel(data).then(res => {
+        console.log(res);
+        this.updateModelDialogFormVisible = false;
+        // 刷新模型列表
+        this.getAllModelList();
+        // 清空添加模型表单
+        this.updaModelForm = {
+          modelName: '',
+          modelVersion: '',
+          modelUrl: '',
+          runtime: '',
+          batchSize: 1,
+          minWorkers: 1,
+          maxWorkers: 1,
+          synchronous: false,
+        };
+      }).catch(err => {
+        console.log(err);
+      })
     },
     registerModel(url) {
       axios.post(url).then(res => {
@@ -396,21 +469,30 @@ export default {
         console.log(err);
       })
     },
-    updateModel(url) {
-      axios.put(url).then(res => {
-        this.addModelDialogFormVisible = false;
-        // 刷新模型列表
-        this.getAllModelList();
-        // 清空添加模型表单
-        this.addModelForm = {
-          url: '',
-          model_name: '',
-          initial_workers: 1,
+    submitDelayTestForm() {
+      let latencies = [];
+      for (let i = 0; i < this.debugDelayTestForm["frequency"]; i++) {
+        let randomIdx = Math.floor(Math.random() * this.debugDelayTestForm["input"].length);
+        let input = this.debugDelayTestForm["input"][randomIdx];
+        let data = {
+          "host": this.serverList[this.activeServerIndex - 1]["host"],
+          "modelName": this.editModelForm["modelName"],
+          "input": input,
         };
+        let sendDate = (new Date()).getTime();
+        this.requestModel(data);
+        let latency = (new Date()).getTime() - sendDate;
+        latencies.push(latency);
+      }
+      console.log(`latencies: ${latencies}`);
+    },
+    requestModel(data) {
+      server.testTorchServeModel(data).then(res => {
+        console.log(res);
       }).catch(err => {
         console.log(err);
       })
-    }
+    },
   },
 }
 </script>
