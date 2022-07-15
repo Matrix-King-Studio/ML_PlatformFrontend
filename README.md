@@ -1,4 +1,4 @@
-# AIOps一站式人工智能平台 Vue前端
+# AI-Ops一站式人工智能平台 Vue前端
 
 ## Project setup
 ```

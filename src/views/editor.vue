@@ -59,8 +59,7 @@ export default {
       hoverNode.init()
       selectNode.init()
     },
-  },
-  
+  }
 }
 </script>
 
