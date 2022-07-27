@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <el-header style="height:50px">
-      <header-com></header-com>
+      <Header></Header>
     </el-header>
     <el-container>
       <el-aside width="208px">
@@ -15,13 +15,13 @@
 </template>
 
 <script>
-import headerCom from '@/components/Graph/components/Header';
+import Header from "../components/public/Header";
 import asideCom from '@/components/Graph/components/Aside';
 import mainCom from '@/components/Graph/components/Main';
 
 export default {
   components: {
-    headerCom,
+    Header,
     asideCom,
     mainCom
   }

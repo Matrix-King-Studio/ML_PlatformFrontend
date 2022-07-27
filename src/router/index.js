@@ -1,13 +1,12 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Login from '@/views/Login.vue';
+import Login from '@/views/login.vue';
 import editor from "@/views/editor";
 import register from "@/views/register";
 import forgetpass from "@/views/forgetpass"
 // import { from } from 'core-js/fn/array';
 import graph from "@/views/graph";
 import deploy from "../views/deploy";
-import wxLogin from "../views/wxLogin";
 
 Vue.use(VueRouter)
 
@@ -19,7 +18,7 @@ const routes = [{
     {
         path: '/login',
         name: 'Login',
-        component: wxLogin
+        component: Login
     },
     {
         path: '/register',

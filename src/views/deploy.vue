@@ -5,7 +5,11 @@
     </el-header>
     <el-container>
       <el-aside width="208px">
-        <div style="padding-left: 10px">
+        <div style="padding-left: 10px; margin-top: 20px">
+          <el-button type="primary" @click="addServerDialogFormVisible = true">
+            添加服务器
+          </el-button>
+          <el-divider></el-divider>
           <el-menu
               mode="vertical"
               :default-active="activeServerIndex"
@@ -17,11 +21,12 @@
               {{ server.name }}
             </el-menu-item>
           </el-menu>
-          <el-divider></el-divider>
-          <el-button type="primary" @click="addServerDialogFormVisible = true">
-            添加服务器
-          </el-button>
-          <el-dialog title="服务器信息" :visible.sync="addServerDialogFormVisible">
+          <el-dialog title="服务器配置" :visible.sync="addServerDialogFormVisible">
+            <el-steps :active="0" finish-status="success" style="margin-bottom: 20px">
+              <el-step title="配置SSH" ></el-step>
+              <el-step title="配置TorchServe" ></el-step>
+              <el-step title="步骤 3" ></el-step>
+            </el-steps>
             <el-form :model="serverForm">
               <el-form-item label="服务器名" :label-width="formLabelWidth">
                 <el-input v-model="serverForm.name" autocomplete="off"></el-input>
@@ -44,8 +49,11 @@
         </div>
       </el-aside>
       <el-main>
+        <el-button type="primary" @click="configTorchServeDialogFormVisible = true">
+          配置TorchServe
+        </el-button>
         <el-button type="primary" @click="addModelDialogFormVisible = true">
-          添加模型
+          上传模型
         </el-button>
         <el-dialog title="模型信息" :visible.sync="addModelDialogFormVisible">
           <el-form :model="addModelForm">
@@ -194,8 +202,7 @@
                     </el-form-item>
                     <el-form-item label="测试输入">
                       <el-checkbox-group v-model="debugDelayTestForm.input">
-                        <el-checkbox v-for="option of delayTestInputOptions"
-                                     :label="option" name="input"></el-checkbox>
+                        <el-checkbox v-for="option of delayTestInputOptions" :label="option" name="input"></el-checkbox>
                       </el-checkbox-group>
                     </el-form-item>
                     <el-form-item>
@@ -214,8 +221,8 @@
 
 <script>
 import server from "@/config/api/server";
-import Header from '@/components/Graph/components/Header';
 import axios from "axios";
+import Header from "../components/public/Header";
 
 export default {
   name: "deploy",
@@ -232,10 +239,13 @@ export default {
         username: '',
         password: '',
       },
-      formLabelWidth: '120px',
+      formLabelWidth: '110px',
       serverList: [],
       activeServerIndex: '1',
       // 服务器列表相关 end
+      // TorchServe相关 start
+      configTorchServeDialogFormVisible: false,
+      // TorchServe相关 end
       // 模型管理相关 start
       addModelDialogFormVisible: false,
       editModelDialogFormVisible: false,

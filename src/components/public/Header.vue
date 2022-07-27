@@ -2,14 +2,24 @@
   <div class="header_container">
     <div class="header_left">
       <router-link to="/">
-        <img width="35px" height="35px" src="../../../assets/logo.png" alt="">
+        <img width="35px" height="35px" src="../../assets/logo.png" alt="">
       </router-link>
       <router-view></router-view>
     </div>
     <div class="header_center">
-      <span :style="{'cursor':'pointer'}">项目</span>
-      <span><router-link to="/graph" class="nav nav_active">模型</router-link></span>
-      <span><router-link to="/deploy" class="nav">部署</router-link></span>
+      <!-- 根据 routerList 循环生成顶部栏导航 -->
+      <router-link v-for="(item, index) in routerList" :key="index" :to="item.path">
+        <span v-if="item.path === $route.path">
+          <i class="iconfont icon-xiangxia"></i>
+        </span>
+        <span v-else>
+          <i class="iconfont icon-xiangyou"></i>
+        </span>
+        <!-- 如果选中当前路由，则字体颜色设置为蓝色 -->
+        <span v-if="item.path === $route.path"> <span style="color: #4386f5"> {{ item.name }} </span> </span>
+        <!-- 如果不是当前路由，则字体颜色设置为黑色 -->
+        <span v-else> <span> {{ item.name }} </span> </span>
+      </router-link>
     </div>
     <div class="header_right">
       <div class="user_logo" :style="{'borderColor':show ? '#ccc' : 'transparent'}" @click.stop="showmenu">
@@ -25,7 +35,7 @@
         </router-link>
       </li>
       <li class="sep"></li>
-      <li v-for="(item,index) in userlist" :key="index+'1'">
+      <li v-for="(item,index) in userList" :key="index+'1'">
         <router-link to="" class="nav">
           <span :class="item.icon"></span>
           {{ item.name }}
@@ -46,8 +56,22 @@
 export default {
   data() {
     return {
+      routerList: [
+        {
+          name: '项目',
+          path: '/project',
+        },
+        {
+          name: '模型',
+          path: '/graph',
+        },
+        {
+          name: '部署',
+          path: '/deploy',
+        },
+      ],
       user_img: require('@/assets/logo.png'),
-      userlist: [
+      userList: [
         {
           name: '账户中心',
           icon: "iconfont icon-zhanghuzhongxinmoren"

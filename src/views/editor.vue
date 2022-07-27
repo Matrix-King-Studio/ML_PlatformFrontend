@@ -15,7 +15,6 @@
 </template>
 
 <script>
-import Header from "@/components/Editor/components/Header";
 import MenuTree from "@/components/Editor/components/MenuTree";
 import Editor from "@/components/Editor/components/Editor";
 import modelRectNode from "@/config/graph/modelRectNode";
@@ -24,6 +23,7 @@ import hoverNode from "@/config/behavior/hover-node";
 import selectNode from "@/config/behavior/select-node";
 import {mapGetters} from "vuex";
 import customEdge from "@/config/graph/customEdge";
+import Header from "../components/Editor/components/Header";
 
 export default {
   name: "editor",
